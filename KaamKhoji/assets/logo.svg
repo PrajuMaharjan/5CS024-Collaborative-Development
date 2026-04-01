@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Rounded square background -->
+  <rect x="5" y="5" width="90" height="90" rx="22" ry="22" fill="#2563EB" opacity="0.12"/>
+
+  <!-- Magnifying glass circle -->
+  <circle cx="42" cy="42" r="22" fill="none" stroke="#2563EB" stroke-width="8" stroke-linecap="round"/>
+
+  <!-- Inner circle highlight -->
+  <circle cx="42" cy="42" r="13" fill="none" stroke="#2563EB" stroke-width="4" opacity="0.35"/>
+
+  <!-- Handle -->
+  <line x1="58" y1="58" x2="76" y2="76" stroke="#2563EB" stroke-width="8" stroke-linecap="round"/>
+</svg>
