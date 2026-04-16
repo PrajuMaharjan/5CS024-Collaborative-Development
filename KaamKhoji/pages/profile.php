@@ -56,12 +56,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'My Profile';
+$pageCss = 'profile';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>👤 My Profile</h1>
+        <h1>My Profile</h1>
         <p>Update your personal information</p>
     </div>
 </div>
@@ -71,7 +72,7 @@ require_once '../includes/header.php';
 
         <?php if ($success): ?>
             <div class="flash flash-success" style="border-radius:8px; margin-bottom:1.5rem;">
-                ✅ <?= htmlspecialchars($success) ?>
+                <?= htmlspecialchars($success) ?>
             </div>
         <?php endif; ?>
         <?php if ($error): ?>
@@ -82,8 +83,8 @@ require_once '../includes/header.php';
 
         <!-- Profile Header Card -->
         <div class="card mb-3" style="text-align:center; padding:2rem;">
-            <div style="width:72px;height:72px;border-radius:50%;background:var(--primary-light);display:flex;align-items:center;justify-content:center;font-size:2rem;margin:0 auto 1rem;">
-                👤
+            <div style="width:72px;height:72px;border-radius:50%;background:#00b4d8;display:flex;align-items:center;justify-content:center;font-size:1.6rem;font-weight:700;color:#fff;margin:0 auto 1rem;">
+                <?= strtoupper(mb_substr($user['name'], 0, 1)) ?>
             </div>
             <h2 style="font-size:1.2rem; font-weight:700;"><?= htmlspecialchars($user['name']) ?></h2>
             <p class="text-muted"><?= htmlspecialchars($user['email']) ?></p>
@@ -160,7 +161,7 @@ require_once '../includes/header.php';
                     </div>
                 </div>
 
-                <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                <button type="submit" class="btn btn-primary">Save Changes</button>
 
             </form>
         </div>

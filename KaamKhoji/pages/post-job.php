@@ -42,12 +42,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $pageTitle = 'Post a Job';
+$pageCss = 'post-job';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>➕ Post a New Job</h1>
+        <h1>Post a New Job</h1>
         <p>Fill in the details below to attract the right candidates</p>
     </div>
 </div>
@@ -136,7 +137,7 @@ require_once '../includes/header.php';
                 </div>
 
                 <div style="display:flex; gap:1rem;">
-                    <button type="submit" class="btn btn-primary btn-lg">🚀 Post Job</button>
+                    <button type="submit" class="btn btn-primary btn-lg">Post Job</button>
                     <a href="<?= BASE_URL ?>/dashboard/employer.php" class="btn btn-outline btn-lg">Cancel</a>
                 </div>
 

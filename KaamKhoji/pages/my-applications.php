@@ -23,12 +23,13 @@ $applications = $stmt->fetchAll();
 $typeLabels = ['full-time'=>'Full Time','part-time'=>'Part Time','remote'=>'Remote','contract'=>'Contract','internship'=>'Internship'];
 
 $pageTitle = 'My Applications';
+$pageCss = 'my-applications';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>📋 My Applications</h1>
+        <h1>My Applications</h1>
         <p>Track the status of all your job applications</p>
     </div>
 </div>
@@ -37,7 +38,6 @@ require_once '../includes/header.php';
 
     <?php if (empty($applications)): ?>
         <div class="empty-state">
-            <div class="empty-icon">📭</div>
             <h3>No applications yet</h3>
             <p>Start applying for jobs and track your progress here.</p>
             <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-primary">Browse Jobs</a>
@@ -48,7 +48,7 @@ require_once '../includes/header.php';
         <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-bottom:1.5rem;">
             <?php
             $counts = array_count_values(array_column($applications, 'status'));
-            $labels = ['pending'=>'Pending','reviewed'=>'Reviewed','accepted'=>'Accepted ✅','rejected'=>'Rejected'];
+            $labels = ['pending'=>'Pending','reviewed'=>'Reviewed','accepted'=>'Accepted','rejected'=>'Rejected'];
             foreach ($labels as $key => $label):
                 if (($counts[$key] ?? 0) > 0):
             ?>
@@ -88,7 +88,7 @@ require_once '../includes/header.php';
                                     <?= $typeLabels[$app['type']] ?? $app['type'] ?>
                                 </span>
                             </td>
-                            <td>📍 <?= htmlspecialchars($app['location']) ?></td>
+                            <td><?= htmlspecialchars($app['location']) ?></td>
                             <td>
                                 <span class="status-badge status-<?= $app['status'] ?>">
                                     <?= ucfirst($app['status']) ?>

@@ -1,7 +1,5 @@
 <?php
-// ============================================================
 // index.php - Landing Page
-// ============================================================
 require_once 'includes/auth.php';
 
 if (isLoggedIn()) {
@@ -27,6 +25,7 @@ $stmt = $pdo->query("
 $latestJobs = $stmt->fetchAll();
 
 $pageTitle = 'Home';
+$pageCss = 'landing';
 require_once 'includes/header.php';
 ?>
 
@@ -49,11 +48,11 @@ require_once 'includes/header.php';
         </h1>
 
         <p>Affordable, fast, human-powered job search.<br>
-           Real employers, no AI filters, always on time.</p>
+            Real employers, no AI filters, always on time.</p>
 
         <form class="hero-search" action="<?= BASE_URL ?>/pages/jobs.php" method="GET">
             <input type="text" name="keyword" placeholder="Job title, skills, or company...">
-            <button type="submit">🔍 Search Jobs</button>
+            <button type="submit">Search Jobs</button>
         </form>
 
         <div class="hero-ctas">
@@ -86,25 +85,6 @@ require_once 'includes/header.php';
 <hr class="glow-divider">
 
 <!-- ============================================================
-     TRUST BAR
-     ============================================================ -->
-<section class="trust-bar">
-    <p class="trust-label">Trusted by companies across Nepal</p>
-    <div class="trust-logos">
-        <span class="trust-badge">Ncell</span>
-        <span class="trust-badge">Himalayan Bank</span>
-        <span class="trust-badge">Nepal Airlines</span>
-        <span class="trust-badge">Yomari Tech</span>
-        <span class="trust-badge">CloudFactory</span>
-        <span class="trust-badge">Daraz Nepal</span>
-        <span class="trust-badge">F1Soft</span>
-        <span class="trust-badge">Leapfrog</span>
-    </div>
-</section>
-
-<hr class="glow-divider">
-
-<!-- ============================================================
      TESTIMONIALS — "Hear it directly from our users"
      ============================================================ -->
 <section class="section section-dark">
@@ -120,10 +100,9 @@ require_once 'includes/header.php';
 
         <div class="grid-3">
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "I wouldn't have landed my IT job at Leapfrog if it weren't for KaamKhoji.
-                     The application process was seamless and the employers responded quickly."
+                    The application process was seamless and the employers responded quickly."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">R</div>
@@ -135,10 +114,9 @@ require_once 'includes/header.php';
             </div>
 
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "We've hired 3 amazing team members through KaamKhoji in the last 6 months.
-                     The quality of candidates is excellent and it's completely free."
+                    The quality of candidates is excellent and it's completely free."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">S</div>
@@ -150,10 +128,9 @@ require_once 'includes/header.php';
             </div>
 
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "I struggled with my job search for months until I found KaamKhoji.
-                     Within two weeks I had three interviews and got my first full-time role."
+                    Within two weeks I had three interviews and got my first full-time role."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">A</div>
@@ -184,19 +161,16 @@ require_once 'includes/header.php';
         <div class="grid-3">
             <div class="step-card">
                 <div class="step-num">01</div>
-                <div class="step-icon">📝</div>
                 <h3>Create Your Profile</h3>
                 <p>Sign up as a Job Seeker or Employer in under a minute. No complicated forms.</p>
             </div>
             <div class="step-card">
                 <div class="step-num">02</div>
-                <div class="step-icon">🔍</div>
                 <h3>Search or Post Jobs</h3>
                 <p>Seekers browse thousands of active listings. Employers post openings instantly.</p>
             </div>
             <div class="step-card">
                 <div class="step-num">03</div>
-                <div class="step-icon">🤝</div>
                 <h3>Connect & Get Hired</h3>
                 <p>Apply with one click, track your applications, and connect directly with employers.</p>
             </div>
@@ -210,88 +184,55 @@ require_once 'includes/header.php';
      LATEST JOBS
      ============================================================ -->
 <?php if (!empty($latestJobs)): ?>
-<section class="section section-dark">
-    <div class="container">
-        <p class="section-label">Latest Jobs</p>
-        <h2 class="section-title">Fresh opportunities,<br><span class="gradient-text">posted just now.</span></h2>
-        <p class="section-subtitle">New jobs added daily from top companies across Nepal.</p>
+    <section class="section section-dark">
+        <div class="container">
+            <p class="section-label">Latest Jobs</p>
+            <h2 class="section-title">Fresh opportunities,<br><span class="gradient-text">posted just now.</span></h2>
+            <p class="section-subtitle">New jobs added daily from top companies across Nepal.</p>
 
-        <div class="grid-3">
-            <?php
-            $typeLabels = [
-                'full-time'  => 'Full Time',
-                'part-time'  => 'Part Time',
-                'remote'     => 'Remote',
-                'contract'   => 'Contract',
-                'internship' => 'Internship',
-            ];
-            foreach ($latestJobs as $job): ?>
-                <div class="card job-card">
-                    <div class="job-card-header">
-                        <div>
-                            <a href="<?= BASE_URL ?>/pages/job-detail.php?id=<?= $job['id'] ?>" class="job-title">
-                                <?= htmlspecialchars($job['title']) ?>
-                            </a>
-                            <div class="job-company"><?= htmlspecialchars($job['company']) ?></div>
+            <div class="grid-3">
+                <?php
+                $typeLabels = [
+                    'full-time'  => 'Full Time',
+                    'part-time'  => 'Part Time',
+                    'remote'     => 'Remote',
+                    'contract'   => 'Contract',
+                    'internship' => 'Internship',
+                ];
+                foreach ($latestJobs as $job): ?>
+                    <div class="card job-card">
+                        <div class="job-card-header">
+                            <div>
+                                <a href="<?= BASE_URL ?>/pages/job-detail.php?id=<?= $job['id'] ?>" class="job-title">
+                                    <?= htmlspecialchars($job['title']) ?>
+                                </a>
+                                <div class="job-company"><?= htmlspecialchars($job['company']) ?></div>
+                            </div>
+                            <span class="job-badge badge-<?= $job['type'] ?>">
+                                <?= $typeLabels[$job['type']] ?? $job['type'] ?>
+                            </span>
                         </div>
-                        <span class="job-badge badge-<?= $job['type'] ?>">
-                            <?= $typeLabels[$job['type']] ?? $job['type'] ?>
-                        </span>
+                        <div class="job-meta">
+                            <span>Location <?= htmlspecialchars($job['location']) ?></span>
+                            <?php if ($job['salary']): ?>
+                                <span>Salary <?= htmlspecialchars($job['salary']) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <div class="job-actions">
+                            <a href="<?= BASE_URL ?>/pages/job-detail.php?id=<?= $job['id'] ?>" class="btn btn-primary btn-sm">View Details</a>
+                        </div>
                     </div>
-                    <div class="job-meta">
-                        <span>📍 <?= htmlspecialchars($job['location']) ?></span>
-                        <?php if ($job['salary']): ?>
-                            <span>💰 <?= htmlspecialchars($job['salary']) ?></span>
-                        <?php endif; ?>
-                    </div>
-                    <div class="job-actions">
-                        <a href="<?= BASE_URL ?>/pages/job-detail.php?id=<?= $job['id'] ?>" class="btn btn-primary btn-sm">View Details</a>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                <?php endforeach; ?>
+            </div>
 
-        <div class="text-center mt-3">
-            <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-outline btn-lg">Browse All Jobs →</a>
+            <div class="text-center mt-3">
+                <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-outline btn-lg">Browse All Jobs →</a>
+            </div>
         </div>
-    </div>
-</section>
+    </section>
 
-<hr class="glow-divider">
+    <hr class="glow-divider">
 <?php endif; ?>
-
-<!-- ============================================================
-     JOB CATEGORIES
-     ============================================================ -->
-<section class="section section-alt">
-    <div class="container">
-        <p class="section-label">Job Categories</p>
-        <h2 class="section-title">
-            Explore jobs by
-            <span class="gradient-text">category.</span>
-        </h2>
-        <p class="section-subtitle">Find the right opportunity in your field — from tech to finance, remote to on-site.</p>
-
-        <div class="grid-4">
-            <?php
-            $categories = [
-                ['icon' => '💻', 'label' => 'IT & Software',   'sub' => 'Full Time',  'type' => 'full-time'],
-                ['icon' => '🎨', 'label' => 'Design & Creative', 'sub' => 'Remote',   'type' => 'remote'],
-                ['icon' => '📊', 'label' => 'Finance',          'sub' => 'Full Time', 'type' => 'full-time'],
-                ['icon' => '📱', 'label' => 'Internships',      'sub' => 'All Levels','type' => 'internship'],
-            ];
-            foreach ($categories as $cat): ?>
-                <a href="<?= BASE_URL ?>/pages/jobs.php?type=<?= $cat['type'] ?>" class="feature-card" style="text-decoration:none;">
-                    <div class="feature-icon"><?= $cat['icon'] ?></div>
-                    <h3><?= $cat['label'] ?></h3>
-                    <p><?= $cat['sub'] ?> &nbsp;<span class="text-accent" style="-webkit-text-fill-color:unset;">→</span></p>
-                </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</section>
-
-<hr class="glow-divider">
 
 <!-- ============================================================
      WHY KAAMKHOJI — COMPARISON
@@ -338,7 +279,6 @@ require_once 'includes/header.php';
             <!-- KaamKhoji -->
             <div class="comparison-col is-us">
                 <div class="comparison-col-header">
-                    <span class="logo-accent" style="font-size:1rem;">⬡</span>
                     <span class="col-label">KaamKhoji</span>
                 </div>
                 <div class="comparison-list">
@@ -384,10 +324,9 @@ require_once 'includes/header.php';
 
         <div class="grid-3">
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "KaamKhoji helped me transition from a BPO job to a software company.
-                     The saved jobs feature is brilliant — I tracked everything in one place."
+                    The saved jobs feature is brilliant — I tracked everything in one place."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">P</div>
@@ -399,10 +338,9 @@ require_once 'includes/header.php';
             </div>
 
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "As a small startup, we couldn't afford expensive HR platforms.
-                     KaamKhoji gave us the same results for free. We hired 5 people in a month."
+                    KaamKhoji gave us the same results for free. We hired 5 people in a month."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">M</div>
@@ -414,10 +352,9 @@ require_once 'includes/header.php';
             </div>
 
             <div class="testimonial-card">
-                <div class="stars">★★★★★</div>
                 <p class="testimonial-quote">
                     "Fresh graduate, no connections — KaamKhoji connected me with an employer
-                     who actually gave me a chance. Got my dream internship within 10 days."
+                    who actually gave me a chance. Got my dream internship within 10 days."
                 </p>
                 <div class="testimonial-author">
                     <div class="author-avatar">N</div>

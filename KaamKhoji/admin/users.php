@@ -22,12 +22,13 @@ if (in_array($filterRole, $validRoles)) {
 $users = $stmt->fetchAll();
 
 $pageTitle = 'Manage Users';
+$pageCss = 'admin-pages';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>👥 Manage Users</h1>
+        <h1>Manage Users</h1>
         <p>View and delete user accounts</p>
     </div>
 </div>

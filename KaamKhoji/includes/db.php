@@ -13,10 +13,10 @@ if (!defined('BASE_URL')) {
 }
 
 // Database configuration
-define('DB_HOST', '127.0.0.1:3307');
-define('DB_NAME', 'kaamkhoji');
-define('DB_USER', 'root');       // Change to your MySQL username
-define('DB_PASS', '');           // Change to your MySQL password
+define('DB_HOST', 'sql12.freesqldatabase.com');
+define('DB_NAME', 'sql12822108');
+define('DB_USER', 'sql12822108');       // Change to your MySQL username
+define('DB_PASS', '74sryr8Kiw');           // Change to your MySQL password
 define('DB_CHARSET', 'utf8mb4');
 
 /**
@@ -30,7 +30,7 @@ function getPDO(): PDO {
         $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=" . DB_CHARSET;
 
         $options = [
-            PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,  // Throw exceptions on errors
+            PDO::ATTR_ERRMODE           => PDO::ERRMODE_EXCEPTION,  // Throw exceptions on errors
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,        // Return arrays by default
             PDO::ATTR_EMULATE_PREPARES   => false,                    // Use real prepared statements
         ];

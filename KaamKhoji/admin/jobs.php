@@ -40,12 +40,13 @@ $jobs = $stmt->fetchAll();
 $typeLabels = ['full-time'=>'Full Time','part-time'=>'Part Time','remote'=>'Remote','contract'=>'Contract','internship'=>'Internship'];
 
 $pageTitle = 'Manage Jobs';
+$pageCss = 'admin-pages';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>💼 Manage Jobs</h1>
+        <h1>Manage Jobs</h1>
         <p>View and delete all job listings</p>
     </div>
 </div>
@@ -98,7 +99,7 @@ require_once '../includes/header.php';
                                 <?= $typeLabels[$job['type']] ?? $job['type'] ?>
                             </span>
                         </td>
-                        <td>📍 <?= htmlspecialchars($job['location']) ?></td>
+                        <td><?= htmlspecialchars($job['location']) ?></td>
                         <td><?= $job['app_count'] ?></td>
                         <td>
                             <span class="status-badge status-<?= $job['status'] ?>">

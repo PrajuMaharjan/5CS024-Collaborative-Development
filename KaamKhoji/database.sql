@@ -1,17 +1,10 @@
--- ============================================================
--- KaamKhoji - Job Portal Database Setup
--- Run this file in phpMyAdmin or MySQL CLI to set up the DB
--- ============================================================
 
--- Create and select the database
 CREATE DATABASE IF NOT EXISTS kaamkhoji CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 USE kaamkhoji;
 
--- ============================================================
 -- USERS TABLE
 -- Stores all users: job seekers, employers, and admins
 -- Role: 'seeker', 'employer', 'admin'
--- ============================================================
 CREATE TABLE IF NOT EXISTS users (
     id          INT AUTO_INCREMENT PRIMARY KEY,
     name        VARCHAR(100) NOT NULL,
@@ -24,11 +17,9 @@ CREATE TABLE IF NOT EXISTS users (
     created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- ============================================================
 -- JOBS TABLE
 -- Job listings posted by employers
 -- Status: 'active', 'closed'
--- ============================================================
 CREATE TABLE IF NOT EXISTS jobs (
     id           INT AUTO_INCREMENT PRIMARY KEY,
     employer_id  INT NOT NULL,                   -- references users.id
@@ -44,11 +35,9 @@ CREATE TABLE IF NOT EXISTS jobs (
     FOREIGN KEY (employer_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- ============================================================
 -- APPLICATIONS TABLE
 -- Job applications submitted by seekers
 -- Status: 'pending', 'reviewed', 'accepted', 'rejected'
--- ============================================================
 CREATE TABLE IF NOT EXISTS applications (
     id           INT AUTO_INCREMENT PRIMARY KEY,
     job_id       INT NOT NULL,                   -- references jobs.id
@@ -61,10 +50,8 @@ CREATE TABLE IF NOT EXISTS applications (
     UNIQUE KEY unique_application (job_id, seeker_id)  -- prevent duplicate applications
 );
 
--- ============================================================
 -- SAVED JOBS TABLE
 -- Jobs bookmarked by seekers
--- ============================================================
 CREATE TABLE IF NOT EXISTS saved_jobs (
     id         INT AUTO_INCREMENT PRIMARY KEY,
     seeker_id  INT NOT NULL,
@@ -75,15 +62,11 @@ CREATE TABLE IF NOT EXISTS saved_jobs (
     UNIQUE KEY unique_saved (seeker_id, job_id)         -- prevent duplicate saves
 );
 
--- ============================================================
 -- SEED DATA - Default admin account
 -- Password: admin123 (hashed below)
--- ============================================================
 INSERT INTO users (name, email, password, role) VALUES
 ('Admin', 'admin@kaamkhoji.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'admin');
--- Note: The hashed password above is for 'password' (Laravel default hash)
--- For 'admin123', run: echo password_hash('admin123', PASSWORD_DEFAULT); in PHP
--- and update this INSERT, OR just register via the signup page and manually set role='admin'
+
 
 -- Sample employer
 INSERT INTO users (name, email, password, role, location) VALUES
@@ -106,9 +89,3 @@ INSERT INTO jobs (employer_id, title, company, location, type, salary, descripti
 (2, 'Backend Intern', 'Tech Corp', 'Lalitpur', 'internship', 'Rs. 10,000 - 15,000',
  'Internship opportunity for fresh graduates. Learn real-world backend development.',
  'Python or PHP basics. Currently enrolled in CS or IT program.');
-
--- ============================================================
--- DONE! Your database is ready.
--- Default demo password for all seeded accounts is: 'password'
--- Change passwords after first login.
--- ============================================================

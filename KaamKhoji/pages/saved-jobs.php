@@ -22,12 +22,13 @@ $savedJobs = $stmt->fetchAll();
 $typeLabels = ['full-time'=>'Full Time','part-time'=>'Part Time','remote'=>'Remote','contract'=>'Contract','internship'=>'Internship'];
 
 $pageTitle = 'Saved Jobs';
+$pageCss = 'saved-jobs';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>🔖 Saved Jobs</h1>
+        <h1>Saved Jobs</h1>
         <p>Jobs you bookmarked for later</p>
     </div>
 </div>
@@ -36,7 +37,6 @@ require_once '../includes/header.php';
 
     <?php if (empty($savedJobs)): ?>
         <div class="empty-state">
-            <div class="empty-icon">🔖</div>
             <h3>No saved jobs yet</h3>
             <p>Click the "Save" button on any job listing to bookmark it here.</p>
             <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-primary">Browse Jobs</a>
@@ -58,17 +58,20 @@ require_once '../includes/header.php';
                         </span>
                     </div>
                     <div class="job-meta">
-                        <span>📍 <?= htmlspecialchars($job['location']) ?></span>
+                        <span><?= htmlspecialchars($job['location']) ?></span>
                         <?php if ($job['salary']): ?>
-                            <span>💰 <?= htmlspecialchars($job['salary']) ?></span>
+                            <span><?= htmlspecialchars($job['salary']) ?></span>
                         <?php endif; ?>
-                        <span>🔖 Saved <?= date('M d', strtotime($job['saved_at'])) ?></span>
+                        <span>Saved <?= date('M d', strtotime($job['saved_at'])) ?></span>
                     </div>
-                    <div class="job-actions">
+                    <div class="job-actions" style="align-items:center;">
                         <a href="<?= BASE_URL ?>/pages/job-detail.php?id=<?= $job['id'] ?>" class="btn btn-primary btn-sm">View & Apply</a>
-                        <a href="<?= BASE_URL ?>/api/unsave-job.php?job_id=<?= $job['id'] ?>"
-                           onclick="return confirm('Remove from saved jobs?')"
-                           class="btn btn-danger btn-sm">Remove</a>
+                        <button class="star-btn starred"
+                                data-job-id="<?= $job['id'] ?>"
+                                title="Unsave job">
+                            <svg class="star-empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                            <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                        </button>
                     </div>
                 </div>
             <?php endforeach; ?>
@@ -77,4 +80,24 @@ require_once '../includes/header.php';
 
 </div>
 
+<script>
+document.querySelectorAll('.star-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        const jobId = btn.dataset.jobId;
+        const card  = btn.closest('.card');
+        fetch(BASE_URL + '/api/unsave-job.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: 'job_id=' + encodeURIComponent(jobId)
+        }).then(r => r.json()).then(d => {
+            if (d.success && card) {
+                card.style.transition = 'opacity 0.3s ease, transform 0.3s ease';
+                card.style.opacity = '0';
+                card.style.transform = 'scale(0.95)';
+                setTimeout(() => card.remove(), 300);
+            }
+        }).catch(() => {});
+    });
+});
+</script>
 <?php require_once '../includes/footer.php'; ?>

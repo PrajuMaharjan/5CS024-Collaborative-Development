@@ -6,6 +6,7 @@
 require_once '../includes/auth.php';
 
 $pageTitle = 'Browse Jobs';
+$pageCss = 'jobs';
 require_once '../includes/header.php';
 
 // Get initial filter values from URL (for non-JS fallback / hero form)
@@ -17,7 +18,7 @@ $type     = htmlspecialchars($_GET['type']     ?? '');
 <!-- Page Header -->
 <div class="page-header">
     <div class="container">
-        <h1>🔍 Browse Jobs</h1>
+        <h1>Browse Jobs</h1>
         <p>Find your perfect opportunity — search and filter below</p>
     </div>
 </div>
@@ -30,22 +31,22 @@ $type     = htmlspecialchars($_GET['type']     ?? '');
 
         <!-- Keyword Search -->
         <div class="search-input-wrap" style="flex:2;">
-            <span class="search-icon">🔍</span>
             <input type="text"
                    id="searchKeyword"
                    name="keyword"
                    placeholder="Job title, skill, or company..."
-                   value="<?= $keyword ?>">
+                   value="<?= $keyword ?>"
+                   style="padding-left:1rem;">
         </div>
 
         <!-- Location Filter -->
         <div class="search-input-wrap">
-            <span class="search-icon">📍</span>
             <input type="text"
                    id="searchLocation"
                    name="location"
                    placeholder="Location..."
-                   value="<?= $location ?>">
+                   value="<?= $location ?>"
+                   style="padding-left:1rem;">
         </div>
 
         <!-- Job Type Filter -->

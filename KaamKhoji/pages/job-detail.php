@@ -52,6 +52,7 @@ $typeLabels = [
 ];
 
 $pageTitle = $job['title'];
+$pageCss = 'job-detail';
 require_once '../includes/header.php';
 ?>
 
@@ -75,8 +76,8 @@ require_once '../includes/header.php';
                 <div>
                     <h1 class="job-detail-title"><?= htmlspecialchars($job['title']) ?></h1>
                     <p style="color:var(--text-muted);">
-                        🏢 <?= htmlspecialchars($job['company']) ?> &nbsp;·&nbsp;
-                        📍 <?= htmlspecialchars($job['location']) ?>
+                        <?= htmlspecialchars($job['company']) ?> &nbsp;·&nbsp;
+                        <?= htmlspecialchars($job['location']) ?>
                     </p>
                 </div>
                 <span class="job-badge badge-<?= $job['type'] ?>">
@@ -87,9 +88,9 @@ require_once '../includes/header.php';
             <!-- Meta Info -->
             <div class="job-meta" style="margin-bottom:1rem;">
                 <?php if ($job['salary']): ?>
-                    <span>💰 <?= htmlspecialchars($job['salary']) ?></span>
+                    <span><?= htmlspecialchars($job['salary']) ?></span>
                 <?php endif; ?>
-                <span>📅 Posted <?= date('M d, Y', strtotime($job['created_at'])) ?></span>
+                <span>Posted <?= date('M d, Y', strtotime($job['created_at'])) ?></span>
             </div>
 
             <!-- Description -->
@@ -114,23 +115,38 @@ require_once '../includes/header.php';
 
                 <?php if ($alreadyApplied): ?>
                     <div class="flash flash-success" style="border-radius:8px;">
-                        ✅ You have already applied for this job.
+                        You have already applied for this job.
                     </div>
                 <?php else: ?>
-                    <!-- Apply form — submitted via AJAX (see js/main.js initApplyJob) -->
-                    <form id="applyForm">
+                    <!-- Apply form — submitted via AJAX (see js/apply-job.js) -->
+                    <form id="applyForm" enctype="multipart/form-data" style="min-height:0;">
                         <input type="hidden" name="job_id" value="<?= $job['id'] ?>">
 
-                        <div class="form-group">
-                            <label class="form-label" for="cover_letter">Cover Letter <span style="color:var(--text-muted); font-weight:400;">(optional)</span></label>
+                        <div class="form-group" style="min-height:0;">
+                            <label class="form-label" for="cover_letter">Cover Letter <span style="color:var(--text-muted); font-weight:400;">(optional, max 250 words)</span></label>
                             <textarea id="cover_letter" name="cover_letter"
                                       class="form-control"
                                       rows="5"
                                       placeholder="Tell the employer why you're a great fit..."></textarea>
+                            <div id="wordCountWrap" style="display:flex;justify-content:space-between;align-items:center;margin-top:0.3rem;">
+                                <span id="wordCountMsg" style="font-size:0.78rem;color:var(--text-muted);"></span>
+                                <span id="wordCountNum" style="font-size:0.78rem;color:var(--text-muted);">0 / 250 words</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="resume">Resume / CV <span style="color:var(--text-muted); font-weight:400;">(PDF only, max 5MB)</span></label>
+                            <input type="file"
+                                   id="resume"
+                                   name="resume"
+                                   accept=".pdf"
+                                   class="form-control"
+                                   style="padding: 0.5rem 1rem; cursor:pointer;">
+                            <span class="form-error" id="resumeError" style="display:none;">Please upload a valid PDF file under 5MB.</span>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-lg">
-                            🚀 Submit Application
+                            Submit Application
                         </button>
                     </form>
                 <?php endif; ?>
@@ -179,16 +195,19 @@ require_once '../includes/header.php';
             <p class="text-muted text-sm mt-1">Posted by: <?= htmlspecialchars($job['employer_name']) ?></p>
         </div>
 
-        <!-- Save Job Button -->
+        <!-- Save Job Star Toggle -->
         <?php if (isLoggedIn() && getRole() === 'seeker'): ?>
-        <div class="sidebar-card" style="text-align:center;">
-            <?php if ($alreadySaved): ?>
-                <button class="btn btn-success btn-block" disabled>✅ Job Saved</button>
-            <?php else: ?>
-                <button onclick="saveJob(<?= $job['id'] ?>, this)" class="btn btn-outline btn-block">
-                    🔖 Save this Job
-                </button>
-            <?php endif; ?>
+        <div class="sidebar-card" style="display:flex;align-items:center;gap:0.75rem;">
+            <button class="star-btn <?= $alreadySaved ? 'starred' : '' ?>"
+                    id="detailStarBtn"
+                    data-job-id="<?= $job['id'] ?>"
+                    title="<?= $alreadySaved ? 'Unsave job' : 'Save job' ?>">
+                <svg class="star-empty" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#64748b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <svg class="star-filled" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#f59e0b" stroke="#f59e0b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+            </button>
+            <span style="font-size:0.85rem;color:var(--text-muted);" id="detailStarLabel">
+                <?= $alreadySaved ? 'Job Saved' : 'Save this Job' ?>
+            </span>
         </div>
         <?php endif; ?>
 
@@ -200,4 +219,42 @@ require_once '../includes/header.php';
 
 </div>
 
+<script>
+// ---- Star toggle on job detail page ----
+(function(){
+    const btn = document.getElementById('detailStarBtn');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+        const jobId   = btn.dataset.jobId;
+        const starred = btn.classList.contains('starred');
+        const label   = document.getElementById('detailStarLabel');
+
+        if (starred) {
+            fetch(BASE_URL + '/api/unsave-job.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'job_id=' + encodeURIComponent(jobId)
+            }).then(r => r.json()).then(d => {
+                if (d.success) {
+                    btn.classList.remove('starred');
+                    btn.title = 'Save job';
+                    if (label) label.textContent = 'Save this Job';
+                }
+            }).catch(() => {});
+        } else {
+            fetch(BASE_URL + '/api/save-job.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'job_id=' + encodeURIComponent(jobId)
+            }).then(r => r.json()).then(d => {
+                if (d.success) {
+                    btn.classList.add('starred');
+                    btn.title = 'Unsave job';
+                    if (label) label.textContent = 'Job Saved';
+                }
+            }).catch(() => {});
+        }
+    });
+})();
+</script>
 <?php require_once '../includes/footer.php'; ?>

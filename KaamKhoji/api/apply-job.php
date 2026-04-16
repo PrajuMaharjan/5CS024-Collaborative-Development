@@ -27,6 +27,7 @@ $pdo = getPDO();
 $jobId       = (int)($_POST['job_id'] ?? 0);
 $coverLetter = trim($_POST['cover_letter'] ?? '');
 $seekerId    = getUserId();
+$resumePath  = null;
 
 if (!$jobId) {
     echo json_encode(['error' => 'Invalid job.']);
@@ -41,7 +42,7 @@ if (!$stmt->fetch()) {
     exit;
 }
 
-// Check if already applied (UNIQUE constraint also prevents this in DB)
+// Check if already applied
 $stmt = $pdo->prepare("SELECT id FROM applications WHERE job_id = ? AND seeker_id = ?");
 $stmt->execute([$jobId, $seekerId]);
 if ($stmt->fetch()) {
@@ -49,15 +50,56 @@ if ($stmt->fetch()) {
     exit;
 }
 
+// Handle PDF resume upload
+if (!empty($_FILES['resume']['name'])) {
+    $file     = $_FILES['resume'];
+    $maxSize  = 5 * 1024 * 1024; // 5 MB
+    $mimeType = mime_content_type($file['tmp_name']);
+
+    if ($file['size'] > $maxSize) {
+        echo json_encode(['error' => 'Resume file is too large. Maximum 5MB allowed.']);
+        exit;
+    }
+    if ($mimeType !== 'application/pdf') {
+        echo json_encode(['error' => 'Only PDF files are accepted for resume upload.']);
+        exit;
+    }
+
+    $uploadDir = dirname(__DIR__) . '/uploads/resumes/';
+    if (!is_dir($uploadDir)) {
+        mkdir($uploadDir, 0755, true);
+    }
+
+    $fileName   = 'resume_' . $seekerId . '_' . $jobId . '_' . time() . '.pdf';
+    $targetPath = $uploadDir . $fileName;
+
+    if (!move_uploaded_file($file['tmp_name'], $targetPath)) {
+        echo json_encode(['error' => 'Failed to upload resume. Please try again.']);
+        exit;
+    }
+
+    $resumePath = 'uploads/resumes/' . $fileName;
+}
+
 // Insert application
 try {
     $stmt = $pdo->prepare("
-        INSERT INTO applications (job_id, seeker_id, cover_letter)
-        VALUES (?, ?, ?)
+        INSERT INTO applications (job_id, seeker_id, cover_letter, resume_path)
+        VALUES (?, ?, ?, ?)
     ");
-    $stmt->execute([$jobId, $seekerId, $coverLetter]);
+    $stmt->execute([$jobId, $seekerId, $coverLetter, $resumePath]);
 
     echo json_encode(['success' => true]);
 } catch (PDOException $e) {
-    echo json_encode(['error' => 'Application failed. Please try again.']);
+    // Fallback: try without resume_path column if it doesn't exist yet
+    try {
+        $stmt = $pdo->prepare("
+            INSERT INTO applications (job_id, seeker_id, cover_letter)
+            VALUES (?, ?, ?)
+        ");
+        $stmt->execute([$jobId, $seekerId, $coverLetter]);
+        echo json_encode(['success' => true]);
+    } catch (PDOException $e2) {
+        echo json_encode(['error' => 'Application failed. Please try again.']);
+    }
 }

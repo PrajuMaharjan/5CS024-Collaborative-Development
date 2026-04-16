@@ -69,12 +69,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
 }
 
 $pageTitle = 'Applicants';
+$pageCss = 'applicants';
 require_once '../includes/header.php';
 ?>
 
 <div class="page-header">
     <div class="container">
-        <h1>👥 Applicants</h1>
+        <h1>Applicants</h1>
         <p>Review candidates who applied for your jobs</p>
     </div>
 </div>
@@ -99,7 +100,6 @@ require_once '../includes/header.php';
 
     <?php if (empty($applicants)): ?>
         <div class="empty-state">
-            <div class="empty-icon">📭</div>
             <h3>No applicants yet</h3>
             <p>Applicants will appear here once people apply for your jobs.</p>
         </div>
@@ -124,7 +124,7 @@ require_once '../includes/header.php';
                             <td>
                                 <strong><?= htmlspecialchars($app['applicant_name']) ?></strong>
                                 <?php if ($app['applicant_location']): ?>
-                                    <div class="text-muted text-sm">📍 <?= htmlspecialchars($app['applicant_location']) ?></div>
+                                    <div class="text-muted text-sm"><?= htmlspecialchars($app['applicant_location']) ?></div>
                                 <?php endif; ?>
                             </td>
                             <td><?= htmlspecialchars($app['applicant_email']) ?></td>
@@ -132,7 +132,7 @@ require_once '../includes/header.php';
                             <td>
                                 <?php if ($app['cover_letter']): ?>
                                     <span title="<?= htmlspecialchars($app['cover_letter']) ?>" style="cursor:help;">
-                                        📄 <?= htmlspecialchars(substr($app['cover_letter'], 0, 40)) ?>...
+                                        <?= htmlspecialchars(substr($app['cover_letter'], 0, 40)) ?>...
                                     </span>
                                 <?php else: ?>
                                     <span class="text-muted">—</span>
@@ -154,7 +154,7 @@ require_once '../includes/header.php';
                                         <option value="accepted" <?= $app['status'] === 'accepted' ? 'selected' : '' ?>>Accepted</option>
                                         <option value="rejected" <?= $app['status'] === 'rejected' ? 'selected' : '' ?>>Rejected</option>
                                     </select>
-                                    <button type="submit" name="update_status" class="btn btn-primary btn-sm">✓</button>
+                                    <button type="submit" name="update_status" class="btn btn-primary btn-sm">Save</button>
                                 </form>
                             </td>
                         </tr>

@@ -37,13 +37,14 @@ $stmt->execute([$userId]);
 $recentApplications = $stmt->fetchAll();
 
 $pageTitle = 'My Dashboard';
+$pageCss = 'job-seeker';
 require_once '../includes/header.php';
 ?>
 
 <!-- Dashboard Header -->
 <div class="dashboard-header">
     <div class="container">
-        <h1>👋 Welcome, <?= htmlspecialchars(getUserName()) ?>!</h1>
+        <h1>Welcome, <?= htmlspecialchars(getUserName()) ?>!</h1>
         <p>Here's an overview of your job search activity.</p>
     </div>
 </div>
@@ -53,21 +54,27 @@ require_once '../includes/header.php';
     <!-- Stats Cards -->
     <div class="grid-3 mb-3">
         <div class="stat-card">
-            <div class="stat-icon">📋</div>
+            <div class="stat-icon stat-icon-plain">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><rect x="8" y="2" width="8" height="4" rx="1" ry="1"/></svg>
+            </div>
             <div class="stat-info">
                 <div class="stat-value"><?= $totalApplications ?></div>
                 <div class="stat-label">Total Applications</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">✅</div>
+            <div class="stat-icon stat-icon-plain">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+            </div>
             <div class="stat-info">
                 <div class="stat-value"><?= $acceptedCount ?></div>
                 <div class="stat-label">Accepted</div>
             </div>
         </div>
         <div class="stat-card">
-            <div class="stat-icon">🔖</div>
+            <div class="stat-icon stat-icon-plain">
+                <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>
+            </div>
             <div class="stat-info">
                 <div class="stat-value"><?= $savedJobsCount ?></div>
                 <div class="stat-label">Saved Jobs</div>
@@ -79,10 +86,10 @@ require_once '../includes/header.php';
     <div class="card mb-3">
         <h3 style="margin-bottom:1rem; font-size:1rem; font-weight:600;">Quick Actions</h3>
         <div style="display:flex; gap:0.75rem; flex-wrap:wrap;">
-            <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-primary">🔍 Find Jobs</a>
-            <a href="<?= BASE_URL ?>/pages/my-applications.php" class="btn btn-outline">📋 My Applications</a>
-            <a href="<?= BASE_URL ?>/pages/saved-jobs.php" class="btn btn-outline">🔖 Saved Jobs</a>
-            <a href="<?= BASE_URL ?>/pages/profile.php" class="btn btn-outline">👤 Edit Profile</a>
+            <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-primary">Find Jobs</a>
+            <a href="<?= BASE_URL ?>/pages/my-applications.php" class="btn btn-outline">My Applications</a>
+            <a href="<?= BASE_URL ?>/pages/saved-jobs.php" class="btn btn-outline">Saved Jobs</a>
+            <a href="<?= BASE_URL ?>/pages/profile.php" class="btn btn-outline">Edit Profile</a>
         </div>
     </div>
 
@@ -95,7 +102,6 @@ require_once '../includes/header.php';
 
         <?php if (empty($recentApplications)): ?>
             <div class="empty-state" style="padding:2rem;">
-                <div class="empty-icon">📭</div>
                 <h3>No applications yet</h3>
                 <p>Start applying for jobs to see them here.</p>
                 <a href="<?= BASE_URL ?>/pages/jobs.php" class="btn btn-primary">Browse Jobs</a>
